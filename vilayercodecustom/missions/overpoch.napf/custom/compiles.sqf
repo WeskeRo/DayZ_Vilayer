@@ -21,3 +21,11 @@ player_manageDoor       = compile preprocessFileLineNumbers "doorManagement\init
 player_enterCode       = compile preprocessFileLineNumbers "doorManagement\player_enterCode.sqf";
 player_changeCombo = compile preprocessFileLineNumbers "doorManagement\player_changeCombo.sqf"; 
 /*DoorManagement End*/
+
+/*Snap Build Pro*/
+if (!isDedicated) then {
+    //player_build = compile preprocessFileLineNumbers "custom\snap_pro\player_build.sqf";
+    snap_build = compile preprocessFileLineNumbers "custom\snap_pro\snap_build.sqf";
+    dayz_spaceInterrupt = compile preprocessFileLineNumbers "custom\snap_pro\dayz_spaceInterrupt.sqf";
+};
+/*Snap Build Pro END*/

@@ -156,3 +156,6 @@ class DayZ_loadingScreen
 #include "doorManagement\doorUnlock.hpp"
 #include "doorManagement\doorManagement.hpp"
 #include "doorManagement\ComboLockUI.hpp"
+
+//----SnapBuild Pro----//
+#include "custom\snap_pro\snappoints.hpp"
