@@ -584,6 +584,17 @@ if(_isModular) then {
 		s_player_packtent = -1;
 	};
 
+	//Allow manage door
+	if((_typeOfCursorTarget in DZE_DoorsLocked)) then {
+		if (s_player_manageDoor < 0) then {		 
+			s_player_manageDoor = player addAction ["<t color='#0059FF'>Manage Door</t>", "doorManagement\initDoorManagement.sqf", _cursorTarget, 5, false];
+		};
+	} else {
+		player removeAction s_player_manageDoor;
+		s_player_manageDoor = -1;
+	};
+	
+	
 	//Allow owner to unlock vault
 	if((_typeOfCursorTarget in DZE_LockableStorage) && _ownerID != "0" && (player distance _cursorTarget < 3)) then {
 		if (s_player_unlockvault < 0) then {
@@ -971,6 +982,10 @@ if(_isModular) then {
 	s_player_warndog = -1;
 	player removeAction s_player_followdog;
 	s_player_followdog = -1;
+	
+	// DoorManagement
+	player removeAction s_player_manageDoor;
+	s_player_manageDoor = -1; // u might also want to add this to variables reset in your variables.sqf
     
     // vault
 	player removeAction s_player_unlockvault;

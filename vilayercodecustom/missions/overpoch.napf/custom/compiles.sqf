@@ -9,3 +9,15 @@ PlotAddFriend       = compile preprocessFileLineNumbers "plotManagement\plotAddF
 PlotRemoveFriend    = compile preprocessFileLineNumbers "plotManagement\plotRemoveFriend.sqf";
 /*Plot End*/
 
+/*DoorManagement Zupa*/
+DoorGetFriends 		= compile preprocessFileLineNumbers "doorManagement\doorGetFriends.sqf";
+DoorNearbyHumans 	= compile preprocessFileLineNumbers "doorManagement\doorNearbyHumans.sqf";
+DoorAddFriend 		= compile preprocessFileLineNumbers "doorManagement\doorAddFriend.sqf";
+DoorRemoveFriend 	= compile preprocessFileLineNumbers "doorManagement\doorRemoveFriend.sqf";
+
+player_unlockDoor       = compile preprocessFileLineNumbers "doorManagement\player_unlockDoor.sqf";
+player_unlockDoorCode = compile preprocessFileLineNumbers "doorManagement\player_unlockDoorCode.sqf";
+player_manageDoor       = compile preprocessFileLineNumbers "doorManagement\initDoorManagement.sqf";
+player_enterCode       = compile preprocessFileLineNumbers "doorManagement\player_enterCode.sqf";
+player_changeCombo = compile preprocessFileLineNumbers "doorManagement\player_changeCombo.sqf"; 
+/*DoorManagement End*/
