@@ -148,3 +148,6 @@ class DayZ_loadingScreen
 		};
 	};
 };
+//----PlotManagement----//
+#include "plotManagement\defines.hpp"
+#include "plotManagement\plotManagement.hpp"
