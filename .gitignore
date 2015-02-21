@@ -18,6 +18,7 @@ $RECYCLE.BIN/
 #Arma2 specific files
 AH.sqf
 AHconfig.sqf
+*.pbo
 
 # Windows shortcuts
 *.lnk
