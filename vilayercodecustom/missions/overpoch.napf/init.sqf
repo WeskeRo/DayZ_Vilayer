@@ -15,7 +15,7 @@ dayz_previousID = 0;
 //disable greeting menu 
 player setVariable ["BIS_noCoreConversations", true];
 //disable radio messages to be heard and shown in the left lower corner of the screen
-enableRadio false;
+enableRadio true;
 // May prevent "how are you civillian?" messages from NPC
 enableSentences false;
 
@@ -95,6 +95,10 @@ if (isServer) then {
 };
 
 if (!isDedicated) then {
+	[] execVM "custom\startup\Server_WelcomeCredits.sqf";  //napisy po prawej stronie
+	//[] execVM "custom\service_point\service_point.sqf";   //refuel, repair, reammo
+	//[] execVM "TradeFromVehicle Version 2.0\setup\init.sqf";
+
 	//Conduct map operations
 	0 fadeSound 0;
 	waitUntil {!isNil "dayz_loadScreenMsg"};
@@ -121,6 +125,8 @@ execVM "\z\addons\dayz_code\external\DynamicWeatherEffects.sqf";
 
 [] execVM "custom\marker\marker.sqf";
 
+execVM "custom\safezone\safezone.sqf";
+execVM "custom\ActionMenu\actionmenu_activate.sqf";
 
 //---Single Coin Currency--- and this completely at the bottom
         execVM "gold\init.sqf";
