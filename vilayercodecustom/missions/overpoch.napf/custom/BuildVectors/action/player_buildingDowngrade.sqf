@@ -43,15 +43,9 @@ if(_IsNearPlot == 0) then {
 	if(dayz_characterID == _ownerID) then {
 		_canBuildOnPlot = true;
 	} else {
-		_friendlies = _nearestPole getVariable ["plotfriends",[]];
-		_fuid  = [];
-		{
-			  _friendUID = _x select 0;
-			  _fuid  =  _fuid  + [_friendUID];
-		} forEach _friendlies;
-		_builder  = getPlayerUID player;
+		_friendlies		= player getVariable ["friendlyTo",[]];
 		// check if friendly to owner
-		if(_builder in _fuid) then {
+		if(_ownerID in _friendlies) then {
 			_canBuildOnPlot = true;
 		};
 	};

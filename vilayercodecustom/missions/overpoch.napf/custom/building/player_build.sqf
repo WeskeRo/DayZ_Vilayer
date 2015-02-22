@@ -2,7 +2,8 @@
 	DayZ Base Building
 	Made for DayZ Epoch please ask permission to use/edit/distrubute email vbawol@veteranbastards.com.
 */
-private ["_location","_dir","_classname","_item","_hasrequireditem","_missing","_hastoolweapon","_cancel","_reason","_started","_finished","_animState","_isMedic","_dis","_sfx","_hasbuilditem","_tmpbuilt","_onLadder","_isWater","_require","_text","_offset","_IsNearPlot","_isOk","_location1","_location2","_counter","_limit","_proceed","_num_removed","_position","_object","_canBuildOnPlot","_friendlies","_nearestPole","_ownerID","_findNearestPoles","_findNearestPole","_distance","_classnametmp","_ghost","_isPole","_needText","_lockable","_zheightchanged","_rotate","_combination_1","_combination_2","_combination_3","_combination_4","_combination","_combination_1_Display","_combinationDisplay","_zheightdirection","_abort","_isNear","_need","_needNear","_vehicle","_inVehicle","_requireplot","_objHDiff","_isLandFireDZ","_isTankTrap"];
+private ["_helperColor","_objectHelper","_objectHelperDir","_objectHelperPos","_canDo", "_pos", "_cnt",
+"_location","_dir","_classname","_item","_hasrequireditem","_missing","_hastoolweapon","_cancel","_reason","_started","_finished","_animState","_isMedic","_dis","_sfx","_hasbuilditem","_tmpbuilt","_onLadder","_isWater","_require","_text","_offset","_IsNearPlot","_isOk","_location1","_location2","_counter","_limit","_proceed","_num_removed","_position","_object","_canBuildOnPlot","_friendlies","_nearestPole","_ownerID","_findNearestPoles","_findNearestPole","_distance","_classnametmp","_ghost","_isPole","_needText","_lockable","_zheightchanged","_rotate","_combination_1","_combination_2","_combination_3","_combination_4","_combination","_combination_1_Display","_combinationDisplay","_zheightdirection","_abort","_isNear","_need","_needNear","_vehicle","_inVehicle","_requireplot","_objHDiff","_isLandFireDZ","_isTankTrap","_vector","_buildOffset","_vUp"];
 
 if(DZE_ActionInProgress) exitWith { cutText [(localize "str_epoch_player_40") , "PLAIN DOWN"]; };
 DZE_ActionInProgress = true;
@@ -22,6 +23,15 @@ if (isNil "snapProVariables") then {
 	snapGizmos = [];
 	snapGizmosNearby = [];
 	snapProVariables = true; // will skip this statement from now on.
+};
+if(isNil "vectorBuildVariables") then{
+	s_player_toggleDegree = -1;
+	s_player_toggleDegrees=[];
+	degreeActions = -1;
+	s_player_toggleVector = -1;
+	s_player_toggleVectors=[];
+	vectorActions = -1;
+	vectorBuildVariables = true;
 };
 // snap vars
 
@@ -60,6 +70,11 @@ DZE_6 = false;
 DZE_F = false;
 
 DZE_cancelBuilding = false;
+
+DZE_updateVec = false;
+DZE_memDir = 0;
+DZE_memForBack = 0;
+DZE_memLeftRight = 0;
 
 call gear_ui_init;
 closeDialog 1;
@@ -252,6 +267,9 @@ if (isClass (missionConfigFile >> "SnapBuilding" >> _classname)) then {
 	["","","",["Init",_object,_classname,_objectHelper]] spawn snap_build;
 };
 	
+	if !(_item in DZE_noRotate) then{
+		["","","",["Init","Init",0]] spawn build_vectors;
+	};
 	while {_isOk} do {
 
 		_zheightchanged = false;
@@ -291,24 +309,39 @@ if (isClass (missionConfigFile >> "SnapBuilding" >> _classname)) then {
 		if (DZE_4) then {
 			_rotate = true;
 			DZE_4 = false;
-			_dir = -45;
+			if(DZE_dirWithDegrees) then{
+				DZE_memDir = DZE_memDir - DZE_curDegree;
+			}else{
+				DZE_memDir = DZE_memDir - 45;
+			};
 		};
 		if (DZE_6) then {
 			_rotate = true;
 			DZE_6 = false;
-			_dir = 45;
+			if(DZE_dirWithDegrees) then{
+				DZE_memDir = DZE_memDir + DZE_curDegree;
+			}else{
+				DZE_memDir = DZE_memDir + 45;
+			};
+		};
+		
+		if(DZE_updateVec) then{
+			[_objectHelper,[DZE_memForBack,DZE_memLeftRight,DZE_memDir]] call fnc_SetPitchBankYaw;
+			DZE_updateVec = false;
 		};
 		
 		if (DZE_F and _canDo) then {	
 			if (helperDetach) then {
-				_objectHelperDir = getDir _objectHelper; 
 				_objectHelper attachTo [player];
-				_objectHelper setDir _objectHelperDir-(getDir player);
+				DZE_memDir = DZE_memDir-(getDir player);
 				helperDetach = false;
-			} else {
-				_objectHelperDir = getDir _objectHelper;
-				detach _objectHelper;
-				[_objectHelper]	call FNC_GetSetPos;
+				[_objectHelper,[DZE_memForBack,DZE_memLeftRight,DZE_memDir]] call fnc_SetPitchBankYaw;
+			} else {		
+				_objectHelperPos = getPosATL _objectHelper;
+				detach _objectHelper;			
+				DZE_memDir = getDir _objectHelper;
+				[_objectHelper,[DZE_memForBack,DZE_memLeftRight,DZE_memDir]] call fnc_SetPitchBankYaw;
+				_objectHelper setPosATL _objectHelperPos;
 				_objectHelper setVelocity [0,0,0]; //fix sliding glitch
 				helperDetach = true;
 			};
@@ -316,20 +349,7 @@ if (isClass (missionConfigFile >> "SnapBuilding" >> _classname)) then {
 		};
 
 		if(_rotate) then {
-			if (helperDetach) then {
-				_objectHelperDir = getDir _objectHelper;
-				_objectHelper setDir _objectHelperDir+_dir;
-				[_objectHelper]	call FNC_GetSetPos;
-			} else {
-				detach _objectHelper;
-				_objectHelperDir = getDir _objectHelper;
-				_objectHelper setDir _objectHelperDir+_dir;
-				[_objectHelper]	call FNC_GetSetPos;
-				_objectHelperDir = getDir _objectHelper;
-				_objectHelper attachTo [player];
-				_objectHelper setDir _objectHelperDir-(getDir player);		
-			};
-
+			[_objectHelper,[DZE_memForBack,DZE_memLeftRight,DZE_memDir]] call fnc_SetPitchBankYaw;
 		};
 
 		if(_zheightchanged) then {
@@ -367,8 +387,6 @@ if (isClass (missionConfigFile >> "SnapBuilding" >> _classname)) then {
 				_objHDiff = _objHDiff - 0.01;
 			};
 
-			_object setDir (getDir _object);
-
 			if((_isAllowedUnderGround == 0) && ((_position select 2) < 0)) then {
 				_position set [2,0];
 			};
@@ -380,9 +398,9 @@ if (isClass (missionConfigFile >> "SnapBuilding" >> _classname)) then {
 			};
 
 			if (!helperDetach) then {
-			_objectHelper attachTo [player];
-			_objectHelper setDir _objectHelperDir-(getDir player);
+				_objectHelper attachTo [player];
 			};
+			[_objectHelper,[DZE_memForBack,DZE_memLeftRight,DZE_memDir]] call fnc_SetPitchBankYaw;
 		};
 
 		sleep 0.5;
@@ -395,6 +413,7 @@ if (isClass (missionConfigFile >> "SnapBuilding" >> _classname)) then {
 			_position = [_object] call FNC_GetPos;
 			detach _object;
 			_dir = getDir _object;
+			_vector = [(vectorDir _object),(vectorUp _object)];
 			deleteVehicle _object;
 			detach _objectHelper;
 			deleteVehicle _objectHelper;
@@ -467,7 +486,8 @@ if (isClass (missionConfigFile >> "SnapBuilding" >> _classname)) then {
 		_tmpbuilt = createVehicle [_classname, _location, [], 0, "CAN_COLLIDE"];
 
 		_tmpbuilt setdir _dir;
-
+		_tmpbuilt setVariable["memDir",_dir,true];
+		
 		// Get position based on object
 		_location = _position;
 
@@ -475,9 +495,23 @@ if (isClass (missionConfigFile >> "SnapBuilding" >> _classname)) then {
 			_location set [2,0];
 		};
 
+		_tmpbuilt setVectorDirAndUp _vector;
+	
+		_buildOffset = [0,0,0];
+		_vUp = _vector select 1;
+		switch (_classname) do {
+			case "MetalFloor_DZ": { _buildOffset = [(_vUp select 0) * .148, (_vUp select 1) * .148,0]; };
+		};
+		
+		_location = [
+			(_location select 0) - (_buildOffset select 0),
+			(_location select 1) - (_buildOffset select 1),
+			(_location select 2) - (_buildOffset select 2)
+		];
+		
 		if (surfaceIsWater _location) then {
 			_tmpbuilt setPosASL _location;
-			_location = ASLtoATL _location;
+			_location = ASLtoATL _location; //Database uses ATL
 		} else {
 			_tmpbuilt setPosATL _location;
 		};
@@ -613,7 +647,7 @@ if (isClass (missionConfigFile >> "SnapBuilding" >> _classname)) then {
 					_tmpbuilt setVariable ["CharacterID",_combination,true];
 
 
-					PVDZE_obj_Publish = [_combination,_tmpbuilt,[_dir,_location],_classname];
+					PVDZE_obj_Publish = [_combination,_tmpbuilt,[_dir,_location,_vector],_classname];
 					publicVariableServer "PVDZE_obj_Publish";
 
 					cutText [format[(localize "str_epoch_player_140"),_combinationDisplay,_text], "PLAIN DOWN", 5];
@@ -626,7 +660,7 @@ if (isClass (missionConfigFile >> "SnapBuilding" >> _classname)) then {
 					if(_tmpbuilt isKindOf "Land_Fire_DZ") then {
 						_tmpbuilt spawn player_fireMonitor;
 					} else {
-						PVDZE_obj_Publish = [dayz_characterID,_tmpbuilt,[_dir,_location],_classname];
+						PVDZE_obj_Publish = [dayz_characterID,_tmpbuilt,[_dir,_location,_vector],_classname];
 						publicVariableServer "PVDZE_obj_Publish";
 					};
 				};
