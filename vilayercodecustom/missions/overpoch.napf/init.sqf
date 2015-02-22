@@ -20,11 +20,28 @@ enableRadio false;
 enableSentences false;
 
 // DayZ Epochconfig
-spawnShoremode = 1; // Default = 1 (on shore)
+
+//ns_blowout = true; // true / false
+//ns_blowout_dayz = true;// true / false
+//ns_blow_delaymod = 0.74; //blowout delay
+//ns_blow_itemapsi = "ItemRadio"; //ItemAPSI replacement
+//ns_blow_playerdamage = 3000; // damage players without ns_blow_itemapsi can get per blowout
+//ns_blow_emp = false; //Namalsk Only
+
+DZE_PlotPole=[50,0];
+DZE_SelfTransfuse = true; // default value
+DZE_selfTransfuse_Values = [7000, 15, 300]; // default value
+DZE_TRADER_SPAWNMODE = false;
+DZE_GodModeBase = true;
+DZE_BuildingLimit = 450;
+DZE_DeathMsgGlobal = true;
+
+DZE_MissionLootTable = true;
+spawnShoremode = 0; // Default = 1 (on shore)
 spawnArea= 1500; // Default = 1500
 // 
-MaxVehicleLimit = 300; // Default = 50
-MaxDynamicDebris = 500; // Default = 100
+MaxVehicleLimit = 500; // Default = 50
+MaxDynamicDebris = 400; // Default = 100
 dayz_MapArea = 18000; // Default = 10000
 
 dayz_minpos = -1000; 
@@ -41,7 +58,7 @@ dayz_tameDogs = true;
 DynamicVehicleDamageLow = 0; // Default: 0
 DynamicVehicleDamageHigh = 100; // Default: 100
 
-DZE_BuildOnRoads = false; // Default: False
+DZE_BuildOnRoads = true; // Default: False
 DZE_noRotate = []; //Objects that cannot be rotated. Ex: DZE_noRotate = ["ItemVault"] (NOTE: The objects magazine classname)
 DZE_vectorDegrees = [0.01, 0.1, 1, 5, 15, 45, 90];
 DZE_curDegree = 45; //Starting rotation angle. //Prefered any value in array above
@@ -83,6 +100,9 @@ if (!isDedicated) then {
 	waitUntil {!isNil "dayz_loadScreenMsg"};
 	dayz_loadScreenMsg = (localize "STR_AUTHENTICATING");
 	
+	//Custom Loadouts
+	[] ExecVM "custom\loadout\loadout.sqf";
+	
 	//Run the player monitor
 	_id = player addEventHandler ["Respawn", {_id = [] spawn player_death;}];
 	_playerMonitor = 	[] execVM "\z\addons\dayz_code\system\player_monitor.sqf";	
@@ -99,6 +119,7 @@ execVM "\z\addons\dayz_code\external\DynamicWeatherEffects.sqf";
 #include "\z\addons\dayz_code\system\BIS_Effects\init.sqf"
 
 
+[] execVM "custom\marker\marker.sqf";
 
 
 //---Single Coin Currency--- and this completely at the bottom
