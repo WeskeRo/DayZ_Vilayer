@@ -1,3 +1,4 @@
+#include "CfgServerTrader\cfgServerTrader.hpp"
 respawn = "BASE";
 respawndelay = 5;
 onLoadMission="DayZ_Epoch Napf";
@@ -24,6 +25,9 @@ class Header
 aiKills = 1;
 diagRadio = 1;
 diagHit = 1;
+// ZupaCOINS
+#include "custom\hw.hpp"
+
 
 class RscText
 {
@@ -180,6 +184,12 @@ class RscTextGUIK {
     w = 0.1;
     h = 0.2;
 };
+
+//----Single Coin Currency----//
+#include "custom\defines.hpp"
+#include "gold\common.hpp"
+#include "gold\bank_dialog.hpp"
+#include "gold\give_player_dialog.hpp"
 
 //----PlotManagement----//
 #include "plotManagement\defines.hpp"

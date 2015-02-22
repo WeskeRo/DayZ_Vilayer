@@ -1,3 +1,13 @@
+disableSerialization;
+
+//-----------------------------------Currency & Banking Configs ---------------------------------//
+CurrencyName = "Revo Coins"; // name of your currency
+DZE_ATM = ["Functionary1_EP1"]; // items,objects classnames where u can bank.
+LimitOnBank = false; // false = no limits, true = banks are limited on the value below
+MaxBankMoney = 500000; // limit on bank for normal players
+DonatorListZupa = ["76561198012464696","111111111"]; // bigger bank PUID
+MaxDonatorBankMoney = 1000000; // Bank size donators
+
  //Player self-action handles 
  dayz_resetSelfActions = { s_player_plotManagement = -1; }; call dayz_resetSelfActions;
  

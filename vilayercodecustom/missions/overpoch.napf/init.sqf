@@ -50,6 +50,8 @@ DZE_dirWithDegrees = true; //When rotating objects with Q&E, use the custom degr
 EpochEvents = [["any","any","any","any",30,"crash_spawner"],["any","any","any","any",0,"crash_spawner"],["any","any","any","any",15,"supply_drop"]];
 dayz_fullMoonNights = true;
 
+DZE_ConfigTrader = true;
+
 //Load in compiled functions
 call compile preprocessFileLineNumbers "\z\addons\dayz_code\init\variables.sqf";				//Initilize the Variables (IMPORTANT: Must happen very early)
 call compile preprocessFileLineNumbers "custom\variables.sqf";
@@ -95,3 +97,9 @@ if (!isDedicated) then {
 execVM "\z\addons\dayz_code\external\DynamicWeatherEffects.sqf";
 
 #include "\z\addons\dayz_code\system\BIS_Effects\init.sqf"
+
+
+
+
+//---Single Coin Currency--- and this completely at the bottom
+        execVM "gold\init.sqf";
